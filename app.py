@@ -3,14 +3,14 @@ from flask_restful import Resource, Api
 from sqlalchemy import create_engine
 from flask_jsonpify import jsonify
 
-db_connect = create_engine('sqlite:///database.db')
+db = create_engine('sqlite:///database.db')
 app = Flask(__name__)
 api = Api(app)
 
 
 class Employees(Resource):
     def get(self):
-        conn = db_connect.connect()
+        conn = db.connect()
         query = conn.execute("select * from employees")
 
         return {'employees': [i[0] for i in query.cursor.fetchall()]}
@@ -18,7 +18,7 @@ class Employees(Resource):
 
 class Tracks(Resource):
     def get(self):
-        conn = db_connect.connect()
+        conn = db.connect()
         query = conn.execute(
             "select trackid, name, composer, unitprice from tracks;")
         result = {'data': [dict(zip(tuple(query.keys()), i))
@@ -28,7 +28,7 @@ class Tracks(Resource):
 
 class Employees_Name(Resource):
     def get(self, employee_id):
-        conn = db_connect.connect()
+        conn = db.connect()
         query = conn.execute(
             "select * from employees where EmployeeId =%d " % int(employee_id))
         result = {'data': [dict(zip(tuple(query.keys()), i))
